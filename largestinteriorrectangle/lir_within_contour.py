@@ -36,7 +36,7 @@ def all_rectangles(grid, contour, min_area):
 
     rects = np.concatenate((rects1, rects2), axis=0)
 
-    return rects1
+    return rects
 
 
 @nb.njit("uint32[:,::1](boolean[:,::1])", parallel=True, cache=True)
