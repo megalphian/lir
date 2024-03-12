@@ -114,3 +114,54 @@ def biggest_span_in_span_map(span_map):
     y = largest_rectangle_indices[0][0]
     span = span_map[y, x]
     return np.array([x, y, span[0], span[1]], dtype=np.uint32)
+
+
+# @nb.njit("uint32[:, :](uint32[:, :, :])", cache=True)
+def get_all_rectangles_in_span_map(span_map, min_area):
+    areas = span_map[:, :, 0] * span_map[:, :, 1]
+    rectangle_array = []
+    largest_rectangle_indices = np.where(areas > min_area)
+    for i in range(len(largest_rectangle_indices[0])):
+        x = largest_rectangle_indices[1][i]
+        y = largest_rectangle_indices[0][i]
+        span = span_map[y, x]
+        rectangle_array.append([x, y, span[0], span[1]])
+    if len(rectangle_array) == 0:
+        print("No rectangles found")
+        return np.array([[]], dtype=np.uint32)
+    rectangles = np.array(rectangle_array, dtype=np.uint32)
+    return rectangles        
+
+    # while added_count < max_count:
+    #     largest_rectangle_indices = np.where(areas == np.amax(areas))
+    #     if len(largest_rectangle_indices[0]) == 0:
+    #         break
+    #     x = largest_rectangle_indices[1][0]
+    #     y = largest_rectangle_indices[0][0]
+    #     span = span_map[y, x]
+    #     new_rectangle = [x, y, span[0], span[1]]
+    #     to_add = True
+    #     for rectangle in rectangle_array:
+    #         if (
+    #             new_rectangle[0] >= rectangle[0]
+    #             and new_rectangle[1] >= rectangle[1]
+    #             and new_rectangle[0] + new_rectangle[2] - 1 <= rectangle[0] + rectangle[2] - 1
+    #             and new_rectangle[1] + new_rectangle[3] - 1 <= rectangle[1] + rectangle[3] - 1
+    #         ):
+    #             to_add = False
+    #             break
+    #         # if (
+    #         #     new_rectangle[0] <= rectangle[0]
+    #         #     and new_rectangle[1] <= rectangle[1]
+    #         #     and new_rectangle[0] + new_rectangle[2] - 1 >= rectangle[0] + rectangle[2] - 1
+    #         #     and new_rectangle[1] + new_rectangle[3] - 1 >= rectangle[1] + rectangle[3] - 1
+    #         # ):
+    #         #     rectangle_array.remove(rectangle)
+    #         #     areas[rectangle[1] : rectangle[1] + rectangle[3], rectangle[0] : rectangle[0] + rectangle[2]] = 0
+    #     if(to_add):
+    #         rectangle_array.append(new_rectangle)
+    #         added_count += 1
+    #     areas[y, x] = 0
+
+    # rectangles = np.array(rectangle_array, dtype=np.uint32)
+    # return rectangles

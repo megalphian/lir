@@ -2,6 +2,8 @@ from .lir_basis import largest_interior_rectangle as lir_basis
 from .lir_within_contour import largest_interior_rectangle as lir_within_contour
 from .lir_within_polygon import largest_interior_rectangle as lir_within_polygon
 
+from .lir_within_contour import all_rectangles
+
 
 def lir(data, contour=None):
     """
@@ -24,6 +26,8 @@ def lir(data, contour=None):
     else:
         return lir_within_contour(data, contour)
 
+def lir_all(data, contour, min_area=0):
+    return all_rectangles(data, contour, min_area)
 
 def pt1(lir):
     """

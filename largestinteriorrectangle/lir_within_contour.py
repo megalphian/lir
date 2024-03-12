@@ -8,6 +8,8 @@ from .lir_basis import predict_vector_size, span_map, spans
 from .lir_basis import v_vector as v_vector_left2right
 from .lir_basis import vertical_adjacency as vertical_adjacency_top2bottom
 
+from .lir_basis import get_all_rectangles_in_span_map
+
 
 def largest_interior_rectangle(grid, contour):
     adjacencies = adjacencies_all_directions(grid)
@@ -21,6 +23,20 @@ def largest_interior_rectangle(grid, contour):
 
     lir = biggest_rectangle(lir1, lir2)
     return lir
+
+def all_rectangles(grid, contour, min_area):
+    adjacencies = adjacencies_all_directions(grid)
+    contour = contour.astype("uint32", order="C")
+
+    s_map, _, saddle_candidates_map = create_maps(adjacencies, contour)
+    rects1 = get_all_rectangles_in_span_map(s_map, min_area)
+
+    s_map = span_map(saddle_candidates_map, adjacencies[0], adjacencies[2])
+    rects2 = get_all_rectangles_in_span_map(s_map, min_area)
+
+    rects = np.concatenate((rects1, rects2), axis=0)
+
+    return rects1
 
 
 @nb.njit("uint32[:,::1](boolean[:,::1])", parallel=True, cache=True)
